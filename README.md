@@ -1,4 +1,6 @@
-# Quark
+# Quark-noBLM
+Fork of Vazkii's [Quark](https://github.com/Vazkii/Quark) that removes political messages
+
 Small things.
 
 This mod requires [AutoRegLib](https://github.com/Vazkii/AutoRegLib).
