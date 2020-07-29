@@ -40,8 +40,11 @@ import vazkii.quark.tools.module.PickarangModule;
 
 public class PickarangItem extends QuarkItem {
 
-	public PickarangItem(String regname, Module module, Properties properties) {
+	public final boolean isNetherite;
+	
+	public PickarangItem(String regname, Module module, Properties properties, boolean isNetherite) {
 		super(regname, module, properties);
+		this.isNetherite = isNetherite;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class PickarangItem extends QuarkItem {
 
 	@Override
 	public boolean canHarvestBlock(BlockState blockIn) {
-		switch (PickarangModule.harvestLevel) {
+		switch (isNetherite ? PickarangModule.netheriteHarvestLevel : PickarangModule.harvestLevel) {
 			case 0:
 				return Items.WOODEN_PICKAXE.canHarvestBlock(blockIn) ||
 						Items.WOODEN_AXE.canHarvestBlock(blockIn) ||
@@ -72,12 +75,12 @@ public class PickarangItem extends QuarkItem {
 
 	@Override
 	public int getMaxDamage(ItemStack stack) {
-		return Math.max(PickarangModule.durability, 0);
+		return Math.max(isNetherite ? PickarangModule.netheriteDurability : PickarangModule.durability, 0);
 	}
 
 	@Override
 	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType type, @Nullable PlayerEntity player, @Nullable BlockState state) {
-		return PickarangModule.harvestLevel;
+		return isNetherite ? PickarangModule.netheriteHarvestLevel : PickarangModule.harvestLevel;
 	}
 
 	@Override
@@ -100,7 +103,7 @@ public class PickarangItem extends QuarkItem {
         if(!worldIn.isRemote)  {
         	int slot = handIn == Hand.OFF_HAND ? playerIn.inventory.getSizeInventory() - 1 : playerIn.inventory.currentItem;
         	PickarangEntity entity = new PickarangEntity(worldIn, playerIn);
-        	entity.setThrowData(slot, itemstack);
+        	entity.setThrowData(slot, itemstack, isNetherite);
         	entity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F + eff * 0.325F, 0F);
             worldIn.addEntity(entity);
         }
@@ -140,12 +143,12 @@ public class PickarangItem extends QuarkItem {
 	
 	@Override
 	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-		return repair.getItem() == Items.DIAMOND;
+		return repair.getItem() == (isNetherite ? Items.NETHERITE_INGOT : Items.DIAMOND);
 	}
 	
 	@Override
 	public int getItemEnchantability() {
-		return Items.DIAMOND_PICKAXE.getItemEnchantability();
+		return isNetherite ? Items.NETHERITE_PICKAXE.getItemEnchantability() : Items.DIAMOND_PICKAXE.getItemEnchantability();
 	}
 
 	@Override
